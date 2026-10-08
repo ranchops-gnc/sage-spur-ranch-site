@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoSlot from '../components/PhotoSlot.astro';
+---
+<BaseLayout title="Sage & Spur Ranch | Western Roots, Open Horizons" description="Sage & Spur Ranch: where courage takes root and legacy rides on. Explore ranch programs, gatherings, stories, and ways to connect.">
+  <section class="home-hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Sage & Spur Ranch</span>
+        <h1>Where Courage Takes Root and Legacy Rides On.</h1>
+        <p class="lead">A place for steady horsemanship, Western tradition, and the kind of community that grows stronger when everyone has room at the gate.</p>
+        <div class="actions"><a class="button" href="/about/">Meet the ranch</a><a class="button secondary" href="/programs/">Explore programs</a></div>
+      </div>
+      <div class="hero-photo"><PhotoSlot tall label="Founder and horse at Sage & Spur Ranch" /></div>
+      <p class="vertical-note" aria-hidden="true">SAGE & SPUR RANCH</p>
+    </div>
+  </section>
+
+  <section class="section paper-deep">
+    <div class="container split">
+      <div><span class="eyebrow">The working heart</span><h2>Start with the ranch.</h2><p class="lead">Good stewardship is practical: care for horses, respect safe capacity, and build only what the work can support.</p></div>
+      <div><p>Sage & Spur is a gathering point for useful skills, grounded stories, and genuine connection. Specific offerings and schedules are shared here only after they are confirmed.</p><ul class="rule-list"><li><span>01</span>Horse-first routines</li><li><span>02</span>Practical learning</li><li><span>03</span>A wider gate into Western life</li></ul><a class="button secondary ranch-link" href="/about/">Our approach</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container story-layout">
+      <div><span class="eyebrow">Rooted in care</span><h2>Tradition is something we practice.</h2><p>From quiet work before sunrise to a welcome at the gate, the ranch is shaped by respect for the land, animals, and people who make a Western life possible.</p><p><strong>[Confirm]</strong> Add the ranch’s founding story, location, and the people behind Sage & Spur before public launch.</p><a href="/about/" class="text-link">Read our story →</a></div>
+      <PhotoSlot label="Ranch life and working landscape" />
+    </div>
+  </section>
+
+  <section class="section journal-preview"><div class="container"><div class="preview-head"><div><span class="eyebrow light">Stay in the loop</span><h2>Gather around the next chapter.</h2></div><a href="/events/">See upcoming events →</a></div><p class="lead">Discover upcoming gatherings, read ranch journal notes, or reach out with a question. Details are always shared with clarity and care.</p></div></section>
+</BaseLayout>
+
+<style>
+  .home-hero { overflow: hidden; padding: clamp(3rem, 8vw, 7rem) 0; }
+  .hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(18rem, .7fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+  .hero-copy { position: relative; z-index: 2; }
+  .hero-copy h1 { max-width: 60rem; margin-right: -8rem; }
+  .hero-photo { transform: rotate(1.5deg); }
+  .vertical-note { position: absolute; right: -5.5rem; top: 50%; margin: 0; transform: rotate(90deg); color: var(--muted); font-size: .65rem; font-weight: 800; letter-spacing: .16em; }
+  .ranch-link { margin-top: 1.5rem; }
+  .story-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(2rem, 8vw, 8rem); align-items: center; }
+  .text-link { color: var(--leather-dark); font-weight: 800; text-underline-offset: .25rem; }
+  .journal-preview { background: var(--ink); color: #f7f1e5; }
+  .journal-preview h2, .journal-preview :global(.story-card h2) { color: inherit; }
+  .journal-preview :global(.story-card) { border-color: #ffffff35; }
+  .preview-head { display: flex; justify-content: space-between; gap: 2rem; align-items: end; margin-bottom: 2rem; }
+  .preview-head > a { color: var(--turquoise); font-weight: 800; }
+  @media (max-width: 780px) { .hero-grid, .story-layout { grid-template-columns: 1fr; } .hero-copy h1 { margin-right: 0; } .vertical-note { display: none; } .preview-head { align-items: start; flex-direction: column; } }
+</style>

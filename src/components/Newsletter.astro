@@ -1,0 +1,74 @@
+---
+import { isMailerLiteReady } from '../lib/newsletter-state.mjs';
+const formAction = import.meta.env.PUBLIC_MAILERLITE_FORM_ACTION || '';
+const ready = isMailerLiteReady(formAction);
+---
+<section class="newsletter" id="founding-community">
+  <div class="container newsletter-grid">
+    <div>
+      <span class="eyebrow light">Founding Community</span>
+      <h2>Ride with the story while it is still being written.</h2>
+      <p>Express interest in future field notes, ranch milestones, gatherings, and a possible membership. This is not a purchase or investment offer.</p>
+    </div>
+    <div class="form-panel">
+      <form id="founding-community-form" action={ready ? formAction : undefined} method="post" data-mailerlite-ready={String(ready)} novalidate>
+        <label for="founding-email">Email address</label>
+        <div class="form-row">
+          <input id="founding-email" type="email" name="fields[email]" autocomplete="email" placeholder="you@example.com" required aria-describedby="form-status" />
+          <button class="button" type="submit" disabled={!ready}>Join the interest list</button>
+        </div>
+        <p id="form-status" class="form-status" role="status" aria-live="polite">
+          {ready ? 'No payment. Confirm your interest by email.' : 'Private preview: connect PUBLIC_MAILERLITE_FORM_ACTION before public launch.'}
+        </p>
+        {ready && <noscript><p>JavaScript is off. Submitting this form will use MailerLite’s standard form-post flow.</p></noscript>}
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { getNewsletterState } from '../lib/newsletter-state.mjs';
+  const form = document.querySelector<HTMLFormElement>('#founding-community-form');
+  const status = document.querySelector<HTMLElement>('#form-status');
+  const submit = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const showState = (state: 'invalid' | 'loading' | 'success' | 'failure') => {
+    if (!status) return;
+    const next = getNewsletterState(state);
+    status.textContent = next.message;
+    status.dataset.status = next.status;
+  };
+  form?.addEventListener('submit', async (event) => {
+    if (form.dataset.mailerliteReady !== 'true') {
+      event.preventDefault();
+      return;
+    }
+    if (!form.checkValidity()) {
+      event.preventDefault(); form.reportValidity(); showState('invalid'); return;
+    }
+    event.preventDefault(); showState('loading');
+    if (submit) submit.disabled = true;
+    try {
+      const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+      if (!response.ok) throw new Error('MailerLite request failed');
+      form.reset(); showState('success');
+    } catch { showState('failure'); }
+    finally { if (submit) submit.disabled = false; }
+  });
+</script>
+
+<style>
+  .newsletter { padding: 6rem 0; background: var(--sage-dark); color: #fffdf7; }
+  .newsletter-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(2rem, 7vw, 7rem); align-items: end; }
+  h2 { color: inherit; }
+  .newsletter p { max-width: 45rem; }
+  .form-panel { padding: 1.3rem; border: 1px solid #ffffff55; background: #ffffff0d; }
+  label { display: block; margin-bottom: .5rem; font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+  .form-row { display: grid; gap: .65rem; }
+  input { width: 100%; min-height: 3.3rem; padding: .8rem 1rem; border: 1px solid transparent; background: #fffdf7; color: var(--ink); font: inherit; }
+  input:focus { outline: 3px solid var(--turquoise); outline-offset: 2px; }
+  .button { width: 100%; }
+  button:disabled, input:disabled { cursor: not-allowed; opacity: .58; }
+  .form-status { min-height: 2.7em; margin: .7rem 0 0; font-size: .76rem; }
+  .form-status[data-status='error'] { color: #ffd5c6; }
+  @media (max-width: 780px) { .newsletter-grid { grid-template-columns: 1fr; } }
+</style>

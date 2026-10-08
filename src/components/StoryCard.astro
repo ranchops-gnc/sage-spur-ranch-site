@@ -1,0 +1,35 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  publishedAt: Date | string;
+  readingTime: string;
+  index?: number;
+}
+
+const { slug, title, description, category, publishedAt, readingTime, index = 0 } = Astro.props;
+const date = new Date(publishedAt);
+---
+<article class="story-card" data-story-card data-search-text={`${title} ${description} ${category}`.toLowerCase()}>
+  <span class="story-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+  <div>
+    <p class="story-meta"><span>{category}</span> · <time datetime={date.toISOString()}>{date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time> · {readingTime}</p>
+    <h2><a href={`/journal/${slug}/`}>{title}</a></h2>
+    <p>{description}</p>
+    <a class="text-link" href={`/journal/${slug}/`}>Read field note <span aria-hidden="true">→</span></a>
+  </div>
+</article>
+
+<style>
+  .story-card { display: grid; grid-template-columns: 4.2rem 1fr; gap: 1.2rem; padding: 1.8rem 0; border-top: 1px solid var(--rule); }
+  .story-number { color: var(--turquoise-dark); font: 800 .75rem/1 var(--sans); letter-spacing: .12em; }
+  .story-meta { margin-bottom: .7rem; font-size: .76rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+  .story-meta span { color: var(--leather); }
+  h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); }
+  h2 a { text-decoration: none; }
+  h2 a:hover { color: var(--leather); }
+  .text-link { font-weight: 800; text-underline-offset: .2em; }
+  @media (max-width: 520px) { .story-card { grid-template-columns: 1fr; } }
+</style>

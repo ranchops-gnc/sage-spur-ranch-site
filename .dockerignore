@@ -1,0 +1,12 @@
+.git
+.github
+.astro
+dist
+node_modules
+.pnpm-store
+.DS_Store
+.vscode
+.openai
+coverage
+*.log
+.env*

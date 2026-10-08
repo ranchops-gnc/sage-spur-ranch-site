@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Newsletter from '../../components/Newsletter.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('journal');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const canonical = new URL(`/journal/${entry.id}/`, Astro.site).toString();
+---
+<BaseLayout title={`${entry.data.title} | Sage & Spur Ranch`} description={entry.data.description} canonical={canonical} article={{ publishedAt: entry.data.publishedAt, category: entry.data.category }}>
+  <article>
+    <header class="article-head"><div class="narrow"><a class="back" href="/journal/">← Prairie Field Notes</a><p class="note"><strong>Sample content:</strong> Replace this draft story and its date with verified ranch content before public launch.</p><p class="meta"><span>{entry.data.category}</span> · <time datetime={entry.data.publishedAt.toISOString()}>{entry.data.publishedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time> · {entry.data.readingTime}</p><h1>{entry.data.title}</h1><p class="lead">{entry.data.description}</p></div></header>
+    <div class="narrow article-body prose"><Content /></div>
+  </article>
+  <section class="next-note"><div class="narrow"><span class="eyebrow">Keep reading</span><h2>More honest stories from a wider West.</h2><a class="button secondary" href="/journal/">Return to the journal</a></div></section>
+  <Newsletter />
+</BaseLayout>
+<style>
+  .article-head { padding: clamp(4rem, 9vw, 8rem) 0 3.5rem; border-bottom: 1px solid var(--rule); }
+  .article-head h1 { font-size: clamp(3.2rem, 8vw, 7rem); }
+  .back { display: inline-block; margin-bottom: 3rem; color: var(--leather-dark); font-weight: 800; }
+  .meta { font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .meta span { color: var(--turquoise-dark); }
+  .article-body { padding-top: 4rem; padding-bottom: 6rem; }
+  .article-body :global(p:first-child::first-letter) { float: left; margin: .08em .12em 0 0; color: var(--leather); font-family: var(--serif); font-size: 4.8rem; line-height: .75; }
+  .next-note { padding: 5rem 0; background: var(--paper-deep); }
+</style>

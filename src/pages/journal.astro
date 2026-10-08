@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StoryCard from '../components/StoryCard.astro';
+import { publicSiteCopy, journalEntries } from '../lib/site-content.mjs';
+import { buildJournalIndex } from '../lib/journal-index.mjs';
+type Story = { slug: string; title: string; description: string; category: string; publishedAt: string; readingTime: string; href: string; searchText: string };
+const stories = buildJournalIndex(journalEntries) as Story[];
+---
+<BaseLayout title="Prairie Field Notes | Sage & Spur Ranch" description={publicSiteCopy.journal}>
+  <header class="page-intro"><div class="container"><span class="eyebrow">The journal</span><h1>Prairie Field Notes</h1><p class="lead">Stories from the land, the work, and the people who keep showing up.</p><p class="note"><strong>Sample content:</strong> Replace the entries below with verified Sage & Spur stories before public launch.</p></div></header>
+  <section class="section"><div class="container journal-grid"><aside><label for="journal-search">Search the journal</label><input id="journal-search" data-journal-search type="search" placeholder="Try “recovery” or “ranch”" /><div class="categories"><strong>Filed under</strong>{[...new Set(stories.map((story) => story.category))].map((category) => <button type="button" data-category={category}>{category}</button>)}<button type="button" data-category="">All field notes</button></div></aside><div><p class="result-count" aria-live="polite"><span data-result-count>{stories.length}</span> field notes</p><div data-story-list>{stories.map((story, index) => <StoryCard {...story} index={index} />)}</div><p class="empty" data-empty hidden>No field notes match that search yet.</p></div></div></section>
+</BaseLayout>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('[data-journal-search]');
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-story-card]')];
+  const count = document.querySelector<HTMLElement>('[data-result-count]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const filter = (query: string) => {
+    const normalized = query.trim().toLocaleLowerCase();
+    let visible = 0;
+    for (const card of cards) {
+      const matches = !normalized || card.dataset.searchText?.includes(normalized);
+      card.hidden = !matches;
+      if (matches) visible += 1;
+    }
+    if (count) count.textContent = String(visible);
+    if (empty) empty.hidden = visible !== 0;
+  };
+  input?.addEventListener('input', () => filter(input.value));
+  document.querySelectorAll<HTMLButtonElement>('[data-category]').forEach((button) => button.addEventListener('click', () => {
+    if (input) input.value = button.dataset.category || '';
+    filter(button.dataset.category || '');
+    input?.focus();
+  }));
+  const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
+  if (input && initialQuery) { input.value = initialQuery; filter(initialQuery); }
+</script>
+
+<style>
+  .journal-grid { display: grid; grid-template-columns: 16rem 1fr; gap: clamp(2rem, 8vw, 8rem); align-items: start; }
+  aside { position: sticky; top: 7rem; }
+  label, .categories strong { display: block; margin-bottom: .65rem; font-size: .72rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+  input { width: 100%; min-height: 3.2rem; padding: .8rem; border: 1px solid var(--ink); background: #fff9ef; font: inherit; }
+  .categories { display: grid; gap: .2rem; margin-top: 2rem; }
+  .categories button { padding: .45rem 0; border: 0; background: transparent; color: var(--muted); font: inherit; text-align: left; cursor: pointer; }
+  .categories button:hover { color: var(--leather); text-decoration: underline; }
+  .result-count { font-size: .75rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .empty { padding: 2rem 0; font-family: var(--serif); font-size: 1.4rem; }
+  @media (max-width: 760px) { .journal-grid { grid-template-columns: 1fr; } aside { position: static; } }
+</style>

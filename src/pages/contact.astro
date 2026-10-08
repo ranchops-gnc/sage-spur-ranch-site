@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { publicSiteCopy } from '../lib/site-content.mjs';
+---
+<BaseLayout title="Contact | Sage & Spur Ranch" description={publicSiteCopy.contact}>
+  <header class="page-intro"><div class="container"><span class="eyebrow">Contact</span><h1>Meet us at the gate.</h1><p class="lead">Bring a sincere question, an idea, or an interest in the work Sage & Spur Ranch is building.</p></div></header>
+  <section class="section"><div class="container contact-grid"><div><h2>Start with an email.</h2><p>For ranch questions, program interest, or thoughtful collaborations:</p><p class="email">[Confirm public contact email]</p><p class="note">Replace this placeholder with the verified public email address before launch.</p></div><aside class="note"><strong>A useful first message includes</strong><ul><li>Your name and where you are writing from</li><li>What brought you to Sage & Spur</li><li>The clearest next step you have in mind</li></ul><p>Please do not send confidential medical, legal, or financial information.</p></aside></div></section>
+</BaseLayout>
+<style>.contact-grid{display:grid;grid-template-columns:1fr .8fr;gap:clamp(2rem,8vw,8rem);align-items:start}.email{color:var(--leather-dark);font-family:var(--serif);font-size:clamp(1.5rem,4vw,3rem);overflow-wrap:anywhere;text-underline-offset:.3rem}@media(max-width:760px){.contact-grid{grid-template-columns:1fr}}</style>
